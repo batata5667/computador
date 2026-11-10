@@ -1,3 +1,32 @@
-windows-11-remote-gaming/
-├── install.ps1
-└── README.md
+
+# WINDOWS 11 REMOTE GAMING
+# Tailscale + Sunshine
+
+Write-Host "================================"
+Write-Host " WINDOWS 11 REMOTE GAMING"
+Write-Host "================================"
+
+# Instalar Tailscale
+Write-Host "Instalando Tailscale..."
+winget install --id Tailscale.Tailscale -e --silent --accept-package-agreements --accept-source-agreements
+
+# Instalar Sunshine
+Write-Host "Instalando Sunshine..."
+winget install --id LizardByte.Sunshine -e --silent --accept-package-agreements --accept-source-agreements
+
+# Conectar Tailscale
+$ts = "C:\Program Files\Tailscale\tailscale.exe"
+
+if (Test-Path $ts) {
+    Write-Host "Conecte sua conta Tailscale..."
+    Start-Process $ts -ArgumentList "up" -Wait
+} else {
+    Write-Host "Erro: Tailscale nao foi instalado."
+    exit 1
+}
+
+Write-Host "================================"
+Write-Host " INSTALACAO FINALIZADA"
+Write-Host "================================"
+Write-Host "Abra o Tailscale e Sunshine."
+Write-Host "Depois conecte pelo Moonlight no Android."
