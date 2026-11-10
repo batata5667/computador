@@ -1,32 +1,35 @@
 
-# WINDOWS 11 REMOTE GAMING
-# Tailscale + Sunshine
+name: Windows 11 Virtual
 
-Write-Host "================================"
-Write-Host " WINDOWS 11 REMOTE GAMING"
-Write-Host "================================"
+on:
+  workflow_dispatch:
 
-# Instalar Tailscale
-Write-Host "Instalando Tailscale..."
-winget install --id Tailscale.Tailscale -e --silent --accept-package-agreements --accept-source-agreements
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 360
 
-# Instalar Sunshine
-Write-Host "Instalando Sunshine..."
-winget install --id LizardByte.Sunshine -e --silent --accept-package-agreements --accept-source-agreements
+    steps:
+      - name: Preparar Windows
+        run: |
+          systeminfo
+          hostname
 
-# Conectar Tailscale
-$ts = "C:\Program Files\Tailscale\tailscale.exe"
+      - name: Instalar Tailscale
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
+          tags: tag:ci
 
-if (Test-Path $ts) {
-    Write-Host "Conecte sua conta Tailscale..."
-    Start-Process $ts -ArgumentList "up" -Wait
-} else {
-    Write-Host "Erro: Tailscale nao foi instalado."
-    exit 1
-}
+      - name: Mostrar conexão
+        run: |
+          tailscale status
+          ipconfig
 
-Write-Host "================================"
-Write-Host " INSTALACAO FINALIZADA"
-Write-Host "================================"
-Write-Host "Abra o Tailscale e Sunshine."
-Write-Host "Depois conecte pelo Moonlight no Android."
+      - name: Manter sessão
+        run: |
+          while ($true) {
+            Start-Sleep -Seconds 60
+          }
+        shell: powershell
