@@ -1,5 +1,5 @@
 
-name: Windows 11 Virtual
+name: Windows Cloud Tailscale
 
 on:
   workflow_dispatch:
@@ -10,26 +10,21 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - name: Preparar Windows
-        run: |
-          systeminfo
-          hostname
-
-      - name: Instalar Tailscale
+      - name: Connect Tailscale
         uses: tailscale/github-action@v3
         with:
-          oauth-client-id: ${{ secrets.TS_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_CLIENT_SECRET }}
+          authkey: ${{ secrets.TAILSCALE_AUTH_KEY }}
           tags: tag:ci
 
-      - name: Mostrar conexão
+      - name: Show Tailscale IP
+        shell: powershell
         run: |
           tailscale status
-          ipconfig
+          tailscale ip -4
 
-      - name: Manter sessão
+      - name: Keep session alive
+        shell: powershell
         run: |
           while ($true) {
             Start-Sleep -Seconds 60
           }
-        shell: powershell
